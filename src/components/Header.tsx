@@ -25,25 +25,25 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-      <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="BanjaraVivah" className="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover" />
-          <span className="text-lg sm:text-xl font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
+      <div className="container flex h-16 sm:h-20 md:h-24 items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3">
+          <img src={logo} alt="BanjaraVivah" className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-full object-cover border-2 border-primary/20" />
+          <span className="text-xl sm:text-2xl md:text-3xl font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
             BanjaraVivah
           </span>
         </Link>
         
-        <nav className="hidden md:flex items-center gap-6">
-          <a href="#home" className="text-sm font-medium transition-colors hover:text-primary">
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <a href="#home" className="text-base lg:text-lg font-medium transition-colors hover:text-primary">
             Home
           </a>
-          <a href="#how-it-works" className="text-sm font-medium transition-colors hover:text-primary">
+          <a href="#how-it-works" className="text-base lg:text-lg font-medium transition-colors hover:text-primary">
             How It Works
           </a>
-          <a href="#success-stories" className="text-sm font-medium transition-colors hover:text-primary">
+          <a href="#success-stories" className="text-base lg:text-lg font-medium transition-colors hover:text-primary">
             Success Stories
           </a>
-          <a href="#features" className="text-sm font-medium transition-colors hover:text-primary">
+          <a href="#features" className="text-base lg:text-lg font-medium transition-colors hover:text-primary">
             Features
           </a>
         </nav>
@@ -53,8 +53,8 @@ const Header = () => {
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    <UserCircle className="mr-2 h-4 w-4" />
+                  <Button variant="ghost" size="sm" className="hidden md:flex h-9 md:h-10 text-sm md:text-base">
+                    <UserCircle className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                     {user?.name || "Account"}
                   </Button>
                 </DropdownMenuTrigger>
@@ -92,21 +92,21 @@ const Header = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <UserCircle className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10">
+                <UserCircle className="h-6 w-6" />
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" className="hidden md:flex" asChild>
+              <Button variant="ghost" size="sm" className="hidden md:flex h-9 md:h-10 text-sm md:text-base" asChild>
                 <Link to="/login">
-                  <User className="mr-2 h-4 w-4" />
+                  <User className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                   Login
                 </Link>
               </Button>
-              <Button variant="hero" size="sm" className="text-xs sm:text-sm px-3 sm:px-4" asChild>
+              <Button variant="hero" size="sm" className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 md:h-11" asChild>
                 <Link to="/register">
-                  <Heart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <Heart className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                   <span className="hidden sm:inline">Register Free</span>
                   <span className="sm:hidden">Register</span>
                 </Link>
@@ -116,37 +116,37 @@ const Header = () => {
           
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10">
+                <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[85vw] sm:w-[300px]">
               <div className="flex flex-col gap-6 mt-8">
-                <div className="flex items-center gap-2 pb-4 border-b">
-                  <img src={logo} alt="BanjaraVivah" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover" />
-                  <span className="text-lg font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
+                <div className="flex items-center gap-3 pb-4 border-b">
+                  <img src={logo} alt="BanjaraVivah" className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover border-2 border-primary/20" />
+                  <span className="text-xl sm:text-2xl font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
                     BanjaraVivah
                   </span>
                 </div>
                 
                 <nav className="flex flex-col gap-4">
                   <SheetClose asChild>
-                    <a href="#home" className="text-base font-medium transition-colors hover:text-primary py-2">
+                    <a href="#home" className="text-lg font-medium transition-colors hover:text-primary py-3">
                       Home
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
-                    <a href="#how-it-works" className="text-base font-medium transition-colors hover:text-primary py-2">
+                    <a href="#how-it-works" className="text-lg font-medium transition-colors hover:text-primary py-3">
                       How It Works
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
-                    <a href="#success-stories" className="text-base font-medium transition-colors hover:text-primary py-2">
+                    <a href="#success-stories" className="text-lg font-medium transition-colors hover:text-primary py-3">
                       Success Stories
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
-                    <a href="#features" className="text-base font-medium transition-colors hover:text-primary py-2">
+                    <a href="#features" className="text-lg font-medium transition-colors hover:text-primary py-3">
                       Features
                     </a>
                   </SheetClose>

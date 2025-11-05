@@ -9,13 +9,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="flex items-center gap-2">
-              <img src={logo} alt="BanjaraVivah" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover" />
-              <span className="text-lg font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <div className="flex flex-col items-center gap-3 sm:gap-4">
+              <img src={logo} alt="BanjaraVivah" className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 rounded-full object-cover border-2 border-primary/20 shadow-lg" />
+              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold bg-gradient-primary bg-clip-text text-transparent text-center">
                 BanjaraVivah
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground text-center">
               Connecting Hearts, Upholding Tradition. India's most trusted Banjara matrimony platform.
             </p>
           </div>
