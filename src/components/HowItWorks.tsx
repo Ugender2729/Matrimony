@@ -33,7 +33,7 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-20 bg-secondary/30">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">How It Works</h2>
           <p className="text-muted-foreground text-lg">
             Your journey to finding the perfect life partner in 4 simple steps
           </p>

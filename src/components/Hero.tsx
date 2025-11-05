@@ -25,7 +25,7 @@ const Hero = () => {
             <span>India's Trusted Banjara Matrimony</span>
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight animate-fade-in">
             Find Your Perfect
             <span className="block text-yellow-300">Life Partner</span>
           </h1>
@@ -37,40 +37,40 @@ const Hero = () => {
 
           {/* Search Box */}
           <div className="bg-white rounded-xl p-6 shadow-2xl space-y-4 animate-fade-in">
-            <h3 className="text-foreground font-semibold text-lg">Start Your Journey</h3>
+            <h3 className="text-foreground font-display font-bold text-xl">Start Your Journey</h3>
             
-            <div className="grid md:grid-cols-3 gap-3">
+            <div className="grid md:grid-cols-3 gap-4">
               <Select>
-                <SelectTrigger className="bg-background">
+                <SelectTrigger className="bg-background h-12 text-base font-medium border-2 hover:border-primary transition-colors">
                   <SelectValue placeholder="I'm looking for" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bride">Bride</SelectItem>
-                  <SelectItem value="groom">Groom</SelectItem>
+                <SelectContent className="bg-card border-2 z-50">
+                  <SelectItem value="bride" className="text-base font-medium">Bride</SelectItem>
+                  <SelectItem value="groom" className="text-base font-medium">Groom</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select>
-                <SelectTrigger className="bg-background">
+                <SelectTrigger className="bg-background h-12 text-base font-medium border-2 hover:border-primary transition-colors">
                   <SelectValue placeholder="Age" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="18-25">18-25 years</SelectItem>
-                  <SelectItem value="26-30">26-30 years</SelectItem>
-                  <SelectItem value="31-35">31-35 years</SelectItem>
-                  <SelectItem value="36+">36+ years</SelectItem>
+                <SelectContent className="bg-card border-2 z-50">
+                  <SelectItem value="18-25" className="text-base font-medium">18-25 years</SelectItem>
+                  <SelectItem value="26-30" className="text-base font-medium">26-30 years</SelectItem>
+                  <SelectItem value="31-35" className="text-base font-medium">31-35 years</SelectItem>
+                  <SelectItem value="36+" className="text-base font-medium">36+ years</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select>
-                <SelectTrigger className="bg-background">
+                <SelectTrigger className="bg-background h-12 text-base font-medium border-2 hover:border-primary transition-colors">
                   <SelectValue placeholder="Religion" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hindu">Hindu</SelectItem>
-                  <SelectItem value="muslim">Muslim</SelectItem>
-                  <SelectItem value="christian">Christian</SelectItem>
-                  <SelectItem value="sikh">Sikh</SelectItem>
+                <SelectContent className="bg-card border-2 z-50">
+                  <SelectItem value="hindu" className="text-base font-medium">Hindu</SelectItem>
+                  <SelectItem value="muslim" className="text-base font-medium">Muslim</SelectItem>
+                  <SelectItem value="christian" className="text-base font-medium">Christian</SelectItem>
+                  <SelectItem value="sikh" className="text-base font-medium">Sikh</SelectItem>
                 </SelectContent>
               </Select>
             </div>

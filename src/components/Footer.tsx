@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <img src={logo} alt="BanjaraVivah" className="h-10 w-10 rounded-full object-cover" />
-              <span className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <span className="text-lg font-display font-bold bg-gradient-primary bg-clip-text text-transparent">
                 BanjaraVivah
               </span>
             </div>
