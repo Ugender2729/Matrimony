@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Shield, Users, Verified, HeartHandshake, Phone, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -35,32 +36,80 @@ const features = [
 ];
 
 const Features = () => {
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.getAttribute("data-index") || "0");
+            setVisibleCards((prev) => new Set([...prev, index]));
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      cardRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, []);
+
   return (
-    <section id="features" className="py-20">
-      <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Why Choose Us</h2>
-          <p className="text-muted-foreground text-lg">
+    <section id="features" className="py-12 sm:py-16 md:py-20 overflow-hidden" ref={sectionRef}>
+      <div className="container px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4 animate-fade-in-up">
+            Why Choose Us
+          </h2>
+          <p className="text-muted-foreground text-base sm:text-lg px-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
             Trusted by thousands of families for genuine matrimonial services
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
+            const isVisible = visibleCards.has(index);
             return (
               <Card 
                 key={index}
-                className="border-2 hover:border-primary transition-all duration-300 hover:shadow-warm animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                data-index={index}
+                className={`border-2 transition-all duration-500 ${
+                  isVisible 
+                    ? "opacity-100 translate-y-0 scale-100" 
+                    : "opacity-0 translate-y-8 scale-95"
+                } hover:border-primary hover:shadow-warm hover:-translate-y-2 hover:scale-105`}
+                style={{ 
+                  transitionDelay: isVisible ? `${index * 0.1}s` : "0s",
+                }}
               >
-                <CardContent className="p-6 space-y-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center">
-                    <Icon className="h-6 w-6 text-white" />
+                <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4 group">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-primary flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg">
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-transform duration-300 group-hover:scale-110" />
                   </div>
                   
-                  <h3 className="text-xl font-semibold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-lg sm:text-xl font-semibold transition-colors duration-300 group-hover:text-primary">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             );

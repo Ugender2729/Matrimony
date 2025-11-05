@@ -24,34 +24,34 @@ const stories = [
 
 const SuccessStories = () => {
   return (
-    <section id="success-stories" className="py-20 bg-gradient-to-b from-secondary/30 to-background">
-      <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-16 animate-fade-in">
-          <Heart className="h-12 w-12 mx-auto mb-4 text-primary fill-primary" />
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Success Stories</h2>
-          <p className="text-muted-foreground text-lg">
+    <section id="success-stories" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-secondary/30 to-background">
+      <div className="container px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 md:mb-16 animate-fade-in">
+          <Heart className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 text-primary fill-primary" />
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4">Success Stories</h2>
+          <p className="text-muted-foreground text-base sm:text-lg px-4">
             Real love stories from couples who found their perfect match
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {stories.map((story, index) => (
             <Card 
               key={index}
               className="relative overflow-hidden hover:shadow-warm transition-all duration-300 animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <CardContent className="p-6 space-y-4">
-                <Quote className="h-8 w-8 text-primary/30" />
+              <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                <Quote className="h-6 w-6 sm:h-8 sm:w-8 text-primary/30" />
                 
-                <p className="text-muted-foreground italic">{story.story}</p>
+                <p className="text-sm sm:text-base text-muted-foreground italic">{story.story}</p>
                 
-                <div className="pt-4 border-t">
-                  <h4 className="font-semibold text-lg bg-gradient-primary bg-clip-text text-transparent">
+                <div className="pt-3 sm:pt-4 border-t">
+                  <h4 className="font-semibold text-base sm:text-lg bg-gradient-primary bg-clip-text text-transparent">
                     {story.name}
                   </h4>
-                  <p className="text-sm text-muted-foreground">{story.location}</p>
-                  <p className="text-sm text-primary font-medium mt-1">{story.date}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{story.location}</p>
+                  <p className="text-xs sm:text-sm text-primary font-medium mt-1">{story.date}</p>
                 </div>
               </CardContent>
             </Card>
