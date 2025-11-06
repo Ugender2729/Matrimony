@@ -47,12 +47,12 @@ const Hero = () => {
               <div className="space-y-1.5">
                 <label className="text-xs sm:text-sm font-semibold text-primary block">I'm looking for</label>
                 <Select>
-                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full">
-                    <SelectValue placeholder="Select option" />
+                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full text-foreground">
+                    <SelectValue placeholder="Select option" className="text-foreground" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-2 z-50">
-                    <SelectItem value="bride" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Bride</SelectItem>
-                    <SelectItem value="groom" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Groom</SelectItem>
+                    <SelectItem value="bride" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Bride</SelectItem>
+                    <SelectItem value="groom" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Groom</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -60,14 +60,14 @@ const Hero = () => {
               <div className="space-y-1.5">
                 <label className="text-xs sm:text-sm font-semibold text-primary block">Age</label>
                 <Select>
-                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full">
-                    <SelectValue placeholder="Select age" />
+                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full text-foreground">
+                    <SelectValue placeholder="Select age" className="text-foreground" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-2 z-50">
-                    <SelectItem value="18-25" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">18-25 years</SelectItem>
-                    <SelectItem value="26-30" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">26-30 years</SelectItem>
-                    <SelectItem value="31-35" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">31-35 years</SelectItem>
-                    <SelectItem value="36+" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">36+ years</SelectItem>
+                    <SelectItem value="18-25" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">18-25 years</SelectItem>
+                    <SelectItem value="26-30" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">26-30 years</SelectItem>
+                    <SelectItem value="31-35" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">31-35 years</SelectItem>
+                    <SelectItem value="36+" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">36+ years</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -75,14 +75,14 @@ const Hero = () => {
               <div className="space-y-1.5 sm:col-span-2 md:col-span-1">
                 <label className="text-xs sm:text-sm font-semibold text-primary block">Religion</label>
                 <Select>
-                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full">
-                    <SelectValue placeholder="Select religion" />
+                  <SelectTrigger className="bg-background h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-border hover:border-primary focus:border-primary transition-colors w-full text-foreground">
+                    <SelectValue placeholder="Select religion" className="text-foreground" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-2 z-50">
-                    <SelectItem value="hindu" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Hindu</SelectItem>
-                    <SelectItem value="muslim" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Muslim</SelectItem>
-                    <SelectItem value="christian" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Christian</SelectItem>
-                    <SelectItem value="sikh" className="text-sm sm:text-base font-medium hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Sikh</SelectItem>
+                    <SelectItem value="hindu" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Hindu</SelectItem>
+                    <SelectItem value="muslim" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Muslim</SelectItem>
+                    <SelectItem value="christian" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Christian</SelectItem>
+                    <SelectItem value="sikh" className="text-sm sm:text-base font-medium text-foreground hover:bg-primary hover:text-white focus:bg-primary focus:text-white">Sikh</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
