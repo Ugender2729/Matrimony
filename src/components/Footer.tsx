@@ -24,10 +24,36 @@ const Footer = () => {
           <div className="space-y-3 sm:space-y-4">
             <h4 className="font-semibold text-sm sm:text-base">Quick Links</h4>
             <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">How It Works</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Success Stories</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Membership Plans</a></li>
+              <li>
+                <Link to="/" className="hover:text-primary transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/register" className="hover:text-primary transition-colors">
+                  Register Now
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className="hover:text-primary transition-colors">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-primary transition-colors">
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-primary transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#success-stories" className="hover:text-primary transition-colors">
+                  Success Stories
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -35,10 +61,26 @@ const Footer = () => {
           <div className="space-y-3 sm:space-y-4">
             <h4 className="font-semibold text-sm sm:text-base">Support</h4>
             <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Safety Tips</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Terms & Conditions</a></li>
+              <li>
+                <a href="mailto:support@banjaravivah.com" className="hover:text-primary transition-colors">
+                  Help Center
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@banjaravivah.com?subject=Safety%20Tips" className="hover:text-primary transition-colors">
+                  Safety Tips
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@banjaravivah.com?subject=Privacy%20Policy" className="hover:text-primary transition-colors">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@banjaravivah.com?subject=Terms%20and%20Conditions" className="hover:text-primary transition-colors">
+                  Terms & Conditions
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -48,11 +90,15 @@ const Footer = () => {
             <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <Phone className="h-3 w-3 sm:h-4 sm:w-4 mt-0.5 text-primary flex-shrink-0" />
-                <span>+91 1800-XXX-XXXX</span>
+                <a href="tel:+91938601984" className="hover:text-primary transition-colors">
+                  +91 938601984
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="h-3 w-3 sm:h-4 sm:w-4 mt-0.5 text-primary flex-shrink-0" />
-                <span className="break-all">support@banjaravivah.com</span>
+                <a href="mailto:support@banjaravivah.com" className="hover:text-primary transition-colors break-all">
+                  support@banjaravivah.com
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mt-0.5 text-primary flex-shrink-0" />

@@ -68,13 +68,18 @@ const Features = () => {
   }, []);
 
   return (
-    <section id="features" className="py-12 sm:py-16 md:py-20 overflow-hidden" ref={sectionRef}>
-      <div className="container px-4 sm:px-6">
+    <section
+      id="features"
+      ref={sectionRef}
+      className="relative py-12 sm:py-16 md:py-20 overflow-hidden parallax-section bg-matrimony-parallax"
+    >
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-xs" />
+      <div className="container px-4 sm:px-6 relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 md:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4 animate-fade-in-up">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4 animate-fade-in-up text-white">
             Why Choose Us
           </h2>
-          <p className="text-muted-foreground text-base sm:text-lg px-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <p className="text-white/80 text-base sm:text-lg px-4 animate-fade-in-up">
             Trusted by thousands of families for genuine matrimonial services
           </p>
         </div>
@@ -84,20 +89,17 @@ const Features = () => {
             const Icon = feature.icon;
             const isVisible = visibleCards.has(index);
             return (
-              <Card 
+              <Card
                 key={index}
                 ref={(el) => {
                   cardRefs.current[index] = el;
                 }}
                 data-index={index}
-                className={`border-2 transition-all duration-500 ${
+                className={`border border-white/10 transition-all duration-500 bg-background/90 backdrop-blur-sm ${
                   isVisible 
                     ? "opacity-100 translate-y-0 scale-100" 
                     : "opacity-0 translate-y-8 scale-95"
                 } hover:border-primary hover:shadow-warm hover:-translate-y-2 hover:scale-105`}
-                style={{ 
-                  transitionDelay: isVisible ? `${index * 0.1}s` : "0s",
-                }}
               >
                 <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4 group">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-primary flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg">

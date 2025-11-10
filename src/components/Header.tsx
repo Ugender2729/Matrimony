@@ -73,6 +73,12 @@ const Header = () => {
                           Browse Profiles
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/profile/create">
+                          <UserCircle className="mr-2 h-4 w-4" />
+                          Edit Profile
+                        </Link>
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
                   ) : (

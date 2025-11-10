@@ -24,23 +24,26 @@ const stories = [
 
 const SuccessStories = () => {
   return (
-    <section id="success-stories" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-secondary/30 to-background">
-      <div className="container px-4 sm:px-6">
+    <section
+      id="success-stories"
+      className="relative py-12 sm:py-16 md:py-20 overflow-hidden parallax-section bg-matrimony-parallax"
+    >
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-xs" />
+      <div className="container px-4 sm:px-6 relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 md:mb-16 animate-fade-in">
           <Heart className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 text-primary fill-primary" />
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4">Success Stories</h2>
-          <p className="text-muted-foreground text-base sm:text-lg px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-3 sm:mb-4 text-white">Success Stories</h2>
+          <p className="text-white/80 text-base sm:text-lg px-4">
             Real love stories from couples who found their perfect match
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {stories.map((story, index) => (
-            <Card 
-              key={index}
-              className="relative overflow-hidden hover:shadow-warm transition-all duration-300 animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
+              <Card
+                key={index}
+                className="relative overflow-hidden hover:shadow-warm transition-all duration-300 animate-fade-in bg-background/90 backdrop-blur-sm border border-white/10"
+              >
               <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <Quote className="h-6 w-6 sm:h-8 sm:w-8 text-primary/30" />
                 

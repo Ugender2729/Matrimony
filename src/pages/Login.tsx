@@ -6,7 +6,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { LogIn, ArrowLeft, Heart, Eye, EyeOff } from "lucide-react";
 import logo from "@/assets/logo.jpg";
@@ -18,6 +19,9 @@ const loginSchema = z.object({
     .max(10, "Mobile number must be exactly 10 digits")
     .regex(/^[6-9]\d{9}$/, "Mobile number must start with 6, 7, 8, or 9 and be 10 digits"),
   password: z.string().min(1, "Password is required"),
+  userType: z.enum(["bride", "groom", "none"], {
+    required_error: "Please select user type",
+  }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -34,6 +38,7 @@ const Login = () => {
     defaultValues: {
       mobile: "",
       password: "",
+      userType: "none",
     },
   });
 
@@ -42,9 +47,30 @@ const Login = () => {
     setError(null);
 
     try {
-      // Regular user login with mobile number
-      await login(data.mobile, data.password);
+      // If admin login (userType is "none"), proceed with normal login
+      if (data.userType === "none") {
+        await login(data.mobile, data.password);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        
+        // Check if user is admin
+        if (user.role === "admin") {
+          navigate("/admin/dashboard");
+          return;
+        } else {
+          setError("Invalid admin credentials");
+          return;
+        }
+      }
+
+      // For bride/groom login, validate userType matches profile
+      await login(data.mobile, data.password, data.userType);
       const user = JSON.parse(localStorage.getItem("user") || "{}");
+      
+      // Verify profileType matches selected userType
+      if (user.profileType !== data.userType) {
+        setError(`This account is registered as a ${user.profileType}, not a ${data.userType}. Please select the correct option.`);
+        return;
+      }
       
       // Check if user is admin
       if (user.role === "admin") {
@@ -109,6 +135,32 @@ const Login = () => {
                       {error}
                     </div>
                   )}
+
+                  <FormField
+                    control={form.control}
+                    name="userType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">I am a</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-12 text-base">
+                              <SelectValue placeholder="Select user type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="bride">Bride</SelectItem>
+                            <SelectItem value="groom">Groom</SelectItem>
+                            <SelectItem value="none">None (Admin)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Select "None" for admin login
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}

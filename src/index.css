@@ -115,3 +115,24 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .parallax-section {
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .bg-matrimony-parallax {
+    background-image: url("./assets/matrimonyimage.jpg");
+  }
+
+  .backdrop-blur-xs {
+    backdrop-filter: blur(1px);
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+}

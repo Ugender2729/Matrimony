@@ -1,23 +1,44 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import heroImage from "@/assets/hero-couple.jpg";
 
+const carouselImages = [
+  heroImage,
+  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80",
+];
+
 const Hero = () => {
   const { isAuthenticated } = useAuth();
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    if (carouselImages.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % carouselImages.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section id="home" className="relative min-h-[500px] sm:min-h-[600px] flex items-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Happy Couple" 
-          className="w-full h-full object-cover"
-        />
+        {carouselImages.map((image, index) => (
+          <img
+            key={image}
+            src={image}
+            alt="Happy couple celebrating"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              index === currentImage ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-hero" />
       </div>
 
@@ -100,6 +121,23 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Carousel indicators */}
+      {carouselImages.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 flex gap-2">
+          {carouselImages.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setCurrentImage(index)}
+              className={`h-2.5 w-2.5 rounded-full border border-white transition-all ${
+                index === currentImage ? "bg-white w-6" : "bg-white/30 hover:bg-white/70"
+              }`}
+              aria-label={`Show slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,12 +11,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { useAuth } from "@/hooks/useAuth";
-import { Upload, Camera, Save, ArrowLeft } from "lucide-react";
+import { Upload, Camera, Save, ArrowLeft, Edit } from "lucide-react";
 import Header from "@/components/Header";
 import { Link } from "react-router-dom";
+import { uploadImageToSupabase } from "@/utils/supabaseHelpers";
+import { compressImage, validateImage } from "@/utils/imageUtils";
+import { validateMinimumAge } from "@/utils/ageValidation";
+import { supabase } from "@/lib/supabase";
 
-const profileSchema = z.object({
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
+// Create schema with age validation
+const createProfileSchema = (profileType: "bride" | "groom") => z.object({
+  dateOfBirth: z.string()
+    .min(1, "Date of birth is required")
+    .refine((date) => {
+      const ageError = validateMinimumAge(date, profileType);
+      return ageError === null;
+    }, (date) => {
+      const ageError = validateMinimumAge(date, profileType);
+      return { message: ageError || "Invalid date of birth" };
+    }),
   height: z.string().min(1, "Height is required"),
   education: z.string().min(1, "Education is required"),
   occupation: z.string().min(1, "Occupation is required"),
@@ -29,15 +42,18 @@ const profileSchema = z.object({
   phone: z.string().min(10, "Valid phone number is required"),
 });
 
-type ProfileFormValues = z.infer<typeof profileSchema>;
+type ProfileFormValues = z.infer<ReturnType<typeof createProfileSchema>>;
 
 const CreateProfile = () => {
   const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
+  const profileSchema = createProfileSchema(user?.profileType || "bride");
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -55,14 +71,103 @@ const CreateProfile = () => {
     },
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Load existing profile data if profile is complete (edit mode)
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      setIsLoadingProfile(true);
+      try {
+        // Try Supabase first
+        const { data: profileData, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && profileData) {
+          // Check if profile is complete
+          if (profileData.is_profile_complete) {
+            setIsEditMode(true);
+            
+            // Pre-fill form with existing data
+            form.reset({
+              dateOfBirth: profileData.date_of_birth || "",
+              height: profileData.height || "",
+              education: profileData.education || "",
+              occupation: profileData.occupation || "",
+              city: profileData.city || "",
+              state: profileData.state || "",
+              religion: profileData.religion || "",
+              motherTongue: profileData.mother_tongue || "",
+              familyType: profileData.family_type || "",
+              about: profileData.about || "",
+              phone: profileData.phone || "",
+            });
+
+            // Set profile image if exists
+            if (profileData.profile_image) {
+              setProfileImage(profileData.profile_image);
+            }
+          }
+        }
+      } catch (err) {
+        // Fallback to localStorage
+        const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+        const userData = storedUsers.find((u: any) => u.id === user.id);
+        
+        if (userData && userData.isProfileComplete) {
+          setIsEditMode(true);
+          
+          form.reset({
+            dateOfBirth: userData.dateOfBirth || userData.date_of_birth || "",
+            height: userData.height || "",
+            education: userData.education || "",
+            occupation: userData.occupation || "",
+            city: userData.city || "",
+            state: userData.state || "",
+            religion: userData.religion || "",
+            motherTongue: userData.motherTongue || userData.mother_tongue || "",
+            familyType: userData.familyType || userData.family_type || "",
+            about: userData.about || "",
+            phone: userData.phone || "",
+          });
+
+          if (userData.profileImage || userData.profile_image) {
+            setProfileImage(userData.profileImage || userData.profile_image);
+          }
+        }
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+  }, [user, form]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Validate image
+      const validationError = validateImage(file, 20); // 20MB max
+      if (validationError) {
+        setError(validationError);
+        e.target.value = ''; // Clear input
+        return;
+      }
+
+      try {
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result as string);
+          setError(null); // Clear any previous errors
+        };
+        reader.readAsDataURL(file);
+      } catch (err: any) {
+        setError(err.message || "Failed to load image preview");
+        e.target.value = ''; // Clear input
+      }
     }
   };
 
@@ -71,14 +176,52 @@ const CreateProfile = () => {
     setError(null);
 
     try {
+      let imageUrl = profileImage;
+
+      // Upload image to Supabase Storage if it's a base64 string
+      if (profileImage && profileImage.startsWith('data:image') && user) {
+        try {
+          // Convert base64 to file for upload
+          const response = await fetch(profileImage);
+          const blob = await response.blob();
+          
+          // Compress image before upload (auto-adjusts based on file size)
+          const compressed = await compressImage(
+            new File([blob], 'profile.jpg', { type: 'image/jpeg' })
+          );
+          
+          // Convert compressed base64 back to file
+          const compressedBlob = await fetch(compressed.data).then(r => r.blob());
+          const compressedFile = new File([compressedBlob], 'profile.jpg', { type: 'image/jpeg' });
+          
+          // Upload to Supabase Storage
+          imageUrl = await uploadImageToSupabase(compressedFile, user.id);
+        } catch (uploadError: any) {
+          console.warn('Failed to upload image to Supabase, using base64 fallback:', uploadError);
+          // Keep base64 as fallback
+        }
+      }
+
       const profileData = {
         ...data,
-        profileImage,
+        profileImage: imageUrl,
         createdAt: new Date().toISOString(),
       };
-      updateProfile(profileData);
-      navigate("/browse"); // Go to browse profiles after profile creation
+      
+      await updateProfile(profileData);
+      
+      // Show success message and navigate
+      if (isEditMode) {
+        setError(null);
+        // Small delay to show success
+        setTimeout(() => {
+          navigate("/browse");
+        }, 500);
+      } else {
+        navigate("/browse"); // Go to browse profiles after profile creation
+      }
     } catch (err: any) {
+      console.error("Profile creation error:", err);
       setError(err.message || "Failed to create profile. Please try again.");
     } finally {
       setIsLoading(false);
@@ -88,6 +231,23 @@ const CreateProfile = () => {
   if (!user) {
     navigate("/login");
     return null;
+  }
+
+  if (isLoadingProfile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-secondary/30 to-background">
+        <Header />
+        <div className="container py-8 sm:py-12 px-4 sm:px-6">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-2 shadow-warm">
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">Loading profile...</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -106,10 +266,20 @@ const CreateProfile = () => {
           <Card className="border-2 shadow-warm">
             <CardHeader>
               <CardTitle className="text-2xl sm:text-3xl font-display font-bold text-center">
-                Create Your Profile
+                {isEditMode ? (
+                  <>
+                    <Edit className="inline-block mr-2 h-6 w-6" />
+                    Edit Your Profile
+                  </>
+                ) : (
+                  "Create Your Profile"
+                )}
               </CardTitle>
               <CardDescription className="text-center text-base">
-                Help others find you by completing your profile. All fields are required.
+                {isEditMode 
+                  ? "Update your profile information. All fields are required."
+                  : "Help others find you by completing your profile. All fields are required."
+                }
               </CardDescription>
             </CardHeader>
 
@@ -166,9 +336,13 @@ const CreateProfile = () => {
                               <Input
                                 type="date"
                                 className="h-12 text-base"
+                                max={new Date(new Date().setFullYear(new Date().getFullYear() - (user?.profileType === "bride" ? 18 : 21))).toISOString().split('T')[0]}
                                 {...field}
                               />
                             </FormControl>
+                            <FormDescription>
+                              Minimum age: {user?.profileType === "bride" ? "18" : "21"} years
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -469,7 +643,7 @@ const CreateProfile = () => {
                       ) : (
                         <>
                           <Save className="mr-2 h-5 w-5" />
-                          Save Profile
+                          {isEditMode ? "Update Profile" : "Save Profile"}
                         </>
                       )}
                     </Button>

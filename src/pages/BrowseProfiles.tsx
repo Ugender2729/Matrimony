@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/useAuth";
 import { User, Search, MapPin, Calendar, GraduationCap, Briefcase, Heart, Filter } from "lucide-react";
 import Header from "@/components/Header";
+import { supabase } from "@/lib/supabase";
+import { dbUserToUser } from "@/utils/supabaseHelpers";
+import type { DatabaseUser } from "@/lib/supabase";
 
 interface Profile {
   id: string;
@@ -45,41 +48,87 @@ const BrowseProfiles = () => {
       return;
     }
 
-    // Load all approved users
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    // Filter: Show only opposite gender profiles (grooms see brides, brides see grooms)
-    const oppositeGender = user.profileType === "bride" ? "groom" : "bride";
-    const oppositeProfiles = storedUsers.filter(
-      (u: any) => 
-        u.role !== "admin" && 
-        u.status === "approved" && 
-        u.profileType === oppositeGender &&
-        u.isProfileComplete === true &&
-        u.id !== user.id
-    );
+    const loadProfiles = async () => {
+      try {
+        // Try Supabase first - query the opposite gender table directly
+        const oppositeGender = user.profileType === "bride" ? "groom" : "bride";
+        const tableName = oppositeGender === "bride" ? "brides" : "grooms";
+        
+        const { data: users, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .eq('role', 'user')
+          .eq('status', 'approved')
+          .eq('is_profile_complete', true)
+          .neq('id', user.id)
+          .order('created_at', { ascending: false });
 
-    // Convert to Profile format
-    const profileList: Profile[] = oppositeProfiles.map((u: any) => ({
-      id: u.id,
-      name: u.name,
-      email: u.email,
-      profileType: u.profileType,
-      profileImage: u.profileImage,
-      dateOfBirth: u.dateOfBirth,
-      height: u.height,
-      education: u.education,
-      occupation: u.occupation,
-      city: u.city,
-      state: u.state,
-      religion: u.religion,
-      motherTongue: u.motherTongue,
-      about: u.about,
-      isProfileComplete: u.isProfileComplete,
-    }));
+        if (error) throw error;
 
-    setProfiles(profileList);
-    setFilteredProfiles(profileList);
+        if (users && users.length > 0) {
+          // Convert database format to Profile format
+          const profileList: Profile[] = users.map((u: any) => ({
+            id: u.id,
+            name: u.name,
+            email: u.email || u.mobile,
+            profileType: u.profile_type || oppositeGender,
+            profileImage: u.profile_image,
+            dateOfBirth: u.date_of_birth,
+            height: u.height,
+            education: u.education,
+            occupation: u.occupation,
+            city: u.city,
+            state: u.state,
+            religion: u.religion,
+            motherTongue: u.mother_tongue,
+            about: u.about,
+            isProfileComplete: u.is_profile_complete,
+          }));
+
+          setProfiles(profileList);
+          setFilteredProfiles(profileList);
+          return;
+        }
+      } catch (supabaseError) {
+        console.warn('Supabase loadProfiles failed, using localStorage fallback:', supabaseError);
+      }
+
+      // Fallback to localStorage
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      
+      const oppositeGender = user.profileType === "bride" ? "groom" : "bride";
+      const oppositeProfiles = storedUsers.filter(
+        (u: any) => 
+          u.role !== "admin" && 
+          u.status === "approved" && 
+          u.profileType === oppositeGender &&
+          u.isProfileComplete === true &&
+          u.id !== user.id
+      );
+
+      const profileList: Profile[] = oppositeProfiles.map((u: any) => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        profileType: u.profileType,
+        profileImage: u.profileImage,
+        dateOfBirth: u.dateOfBirth,
+        height: u.height,
+        education: u.education,
+        occupation: u.occupation,
+        city: u.city,
+        state: u.state,
+        religion: u.religion,
+        motherTongue: u.motherTongue,
+        about: u.about,
+        isProfileComplete: u.isProfileComplete,
+      }));
+
+      setProfiles(profileList);
+      setFilteredProfiles(profileList);
+    };
+
+    loadProfiles();
   }, [user, isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -162,12 +211,12 @@ const BrowseProfiles = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Select value={filters.state} onValueChange={(value) => setFilters({ ...filters, state: value })}>
+                  <Select value={filters.state || undefined} onValueChange={(value) => setFilters({ ...filters, state: value === "__all__" ? "" : value })}>
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="All States" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All States</SelectItem>
+                      <SelectItem value="__all__">All States</SelectItem>
                       {states.map((state) => (
                         <SelectItem key={state} value={state}>
                           {state}
@@ -176,12 +225,12 @@ const BrowseProfiles = () => {
                     </SelectContent>
                   </Select>
 
-                  <Select value={filters.religion} onValueChange={(value) => setFilters({ ...filters, religion: value })}>
+                  <Select value={filters.religion || undefined} onValueChange={(value) => setFilters({ ...filters, religion: value === "__all__" ? "" : value })}>
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="All Religions" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Religions</SelectItem>
+                      <SelectItem value="__all__">All Religions</SelectItem>
                       {religions.map((religion) => (
                         <SelectItem key={religion} value={religion}>
                           {religion}
@@ -190,12 +239,12 @@ const BrowseProfiles = () => {
                     </SelectContent>
                   </Select>
 
-                  <Select value={filters.education} onValueChange={(value) => setFilters({ ...filters, education: value })}>
+                  <Select value={filters.education || undefined} onValueChange={(value) => setFilters({ ...filters, education: value === "__all__" ? "" : value })}>
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="All Education" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Education</SelectItem>
+                      <SelectItem value="__all__">All Education</SelectItem>
                       {educations.map((edu) => (
                         <SelectItem key={edu} value={edu}>
                           {edu}
